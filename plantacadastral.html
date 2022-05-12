@@ -316,12 +316,12 @@
                 fcol.features.forEach(el => {
                     if (zoneamento == 'pend') {
                         linkinfo = 'consultar secretatira urbanismo';
-                        consultapreviap = `https://geoitajai.github.io/geo/consultazoneamentoerro.html#${el.properties.lote_inscricao}`;
-                        consultaalvara = `https://geoitajai.github.io/geo/consultaalvara.html#${el.properties.lote_inscricao}`;
+                        consultapreviap = `https://jaceguay.github.io/geoesri/consultazoneamentoerro.html#${el.properties.lote_inscricao}`;
+                        consultaalvara = `https://jaceguay.github.io/geoesri/consultaalvara.html#${el.properties.lote_inscricao}`;
                     } else {
                         linkinfo = 'clique para abrir';
-                        consultapreviap = `https://geoitajai.github.io/geo/consultazoneamento.html#${el.properties.lote_inscricao}`;
-                        consultaalvara = `https://geoitajai.github.io/geo/consultaalvara.html#${el.properties.lote_inscricao}`;
+                        consultapreviap = `https://jaceguay.github.io/geoesri/consultazoneamento.html#${el.properties.lote_inscricao}`;
+                        consultaalvara = `https://jaceguay.github.io/geoesri/consultaalvara.html#${el.properties.lote_inscricao}`;
                     };
                     objtabela.push({
                         'consultaprevia': consultapreviap,
@@ -477,7 +477,7 @@
         let malhacadastral = new L.esri.dynamicMapLayer({
             url: 'https://arcgis.itajai.sc.gov.br/server/rest/services/malha_cadastral_raster/MapServer/',
             pane: 'basemap_numeracao',
-            minZoom: 14,
+            minZoom: 15,
             maxZoom: 19,
             opacity: 0.7
         }).addTo(mapa);
