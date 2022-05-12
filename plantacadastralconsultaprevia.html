@@ -3,42 +3,27 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Planta Cadastral</title>
+    <title>Itajaí - Consulta Prévia ao Zoneamento</title>
     <link rel="icon" type="image/png" href="images/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <!-- jQuery from CDN -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <!-- jQuery UI -->
-    <link href="lib/jquery-ui.min.css" rel="stylesheet">
-    <link href="lib/jquery-ui.theme.min.css" rel="stylesheet">
-    <script src="lib/jquery-ui.min.js"></script>
     <!-- Leaflet from CDN -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha384-VzLXTJGPSyTLX6d96AxgkKvE/LRb7ECGyTxuwtpjHnVWVZs2gp5RDjeM/tgBnVdM" crossorigin="anonymous" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha384-RFZC58YeKApoNsIbBxf4z6JJXmh+geBSgkCQXFyh+4tiFSJmJBt+2FbjxW7Ar16M"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="lib/jquery-ui.min.css" />
+    <link rel="stylesheet" href="lib/jquery-ui.theme.min.css" />
+    <!-- jQuery from CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="lib/jquery-ui.min.js"></script>
+    <script src="lib/fallback.js"></script>
     <!-- Tabulator from CDN -->
     <link href="https://unpkg.com/tabulator-tables@5.2.4/dist/css/tabulator_simple.min.css" rel="stylesheet">
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.2.4/dist/js/tabulator.min.js"></script>
-    <!-- Leaflet plugins -->
-    <script src="lib/measure/Leaflet.draw.js"></script>
-    <script src="lib/measure/Leaflet.Draw.Event.js"></script>
-    <script src="lib/measure/Toolbar.js"></script>
-    <script src="lib/measure/Tooltip.js"></script>
-    <script src="lib/measure/GeometryUtil.js"></script>
-    <script src="lib/measure/LatLngUtil.js"></script>
-    <script src="lib/measure/TouchEvents.js"></script>
-    <script src="lib/measure/DrawToolbar.js"></script>
-    <script src="lib/measure/Draw.Feature.js"></script>
-    <script src="lib/measure/Draw.SimpleShape.js"></script>
-    <script src="lib/measure/Draw.Polyline.js"></script>
-    <script src="lib/measure/Control.Draw.js"></script>
-    <script src="lib/measure/leaflet.measurecontrol.js"></script>
-    <script src="lib/Control.Coordinates.js"></script>
     <!-- Esri Leaflet from CDN -->
     <script src="https://unpkg.com/esri-leaflet@3.0.8/dist/esri-leaflet.js"
         integrity="sha512-E0DKVahIg0p1UHR2Kf9NX7x7TUewJb30mxkxEm2qOYTVJObgsAGpEol9F6iK6oefCbkJiA4/i6fnTHzM6H1kEA=="
@@ -56,40 +41,107 @@
         gtag('js', new Date());
         gtag('config', 'UA-172813797-1');
     </script>
-    <!-- estilos -->
-    <link rel="stylesheet" href="plantacadastral.css" />
-    <link rel="stylesheet" href="lib/measure/leaflet.draw.css" />
-    <link rel="stylesheet" href="lib/Control.Coordinates.css" />
+    <link rel="stylesheet" href="plantacadastralconsultaprevia.css" />
 </head>
 
 <body>
-
     <div class='conteiner1'>
         <div class='conteiner0' id="brastitulo">
             <div class='logo'>
                 <img src="images/favicon-32x32.png" style="height:auto; width:auto; padding:3px;">
-                <span>Município de Itajaí </br> <b>PLANTA CADASTRAL</b></span>
+                <span>Município de Itajaí </br> <b>Consulta Prévia ao Zoneamento</b></span>
             </div>
             <div class='pesquisa'>
                 <form>
-                    <input id="pesquisaRapida" placeholder="Pesquisa inscr.imobiliária, código ou logradouro"
-                        style="width: 300px;">
+                    <input id="pesquisaRapida" placeholder="Pesquisa inscr.imobiliária, código ou rua"
+                        style="width: 280px;">
                 </form>
             </div>
         </div>
-        <div class="mapa" id="mapa">
-        </div>
-        <div id="areatab">
-            <div id='txt_tabela'>
-                Planta cadastral para simples conferência dos dados de cada imóvel, sujeita a alterações sem aviso
-                prévio. NÃO CONSTITUI DIREITO DE PROPRIEDADE.
+        <div class="mapa" id='mapa'>
+            <div class="barraLateral barraLateralColap" style="width:250px;" id="barraCamadas">
+                <button class="barraLateralEsconder" onclick="barraFechar()">Fechar &times;</button>
+                <div id="barralateral">
+                    <div div class="barraLateralConteudo">
+                        </br>
+                        <h3><span style="text-decoration: underline;">Consulta Prévia ao Zoneamento</span></h3>
+                        <div>
+                            <div style="text-align: left;">
+                                <ul>
+                                    <li>Pode ser feita uma pesquisa pelo código do imóvel ou Inscrição Imobiliária, como
+                                        consta no IPTU.
+                                    </li>
+                                    <li>Também é possível pesquisar por uma rua.
+                                    </li>
+                                    <li>Para navegar, aproxime a uma área no mapa, <b>clique sobre o lote para
+                                            selecionar</b></li>
+                                </ul>
+                            </div>
+                            <p>
+                                <b>Selecione o lote no mapa e utilize o botão </b><button type="button"
+                                    class="botaopadrao" id="abrirConsultaPreviaP">
+                                    <strong>ABRIR CONSULTA PRÉVIA</strong><img src="images/meclick.png"
+                                        alt="clique para abrir" height="20" width="15">
+                                </button>
+                            </p>
+                            <hr>
+                            <p>
+                                Caso marcados os campos, o parecer deve ser solicitados junto a cada órgão
+                                competente:
+                            </p>
+                            <div style="text-align: left;">
+                                <ul style="list-style-type: square;">
+                                    <li>
+                                        <a href="https://servicos.decea.gov.br/aga/?i=faq" target="_blank"
+                                            rel="noopener">COMAER Curitiba</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.sie.sc.gov.br/fxd/inicio.jsp" target="_blank"
+                                            rel="noopener">DEINFRA</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://defesacivil.itajai.sc.gov.br/" target="_blank" rel="noopener">
+                                            Defesa Civil de Itajaí</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.itajai.sc.gov.br/e/meio-ambiente" target="_blank"
+                                            rel="noopener">Instituto Itajaí Sustentável</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://itajai.sc.gov.br/e/urbanismo-e-habitacao" target="_blank"
+                                            rel="noopener">Dep.de Engenharia de Trânsito - Secr.Municipal de
+                                            Desenv.Urbano e Hab.</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            </br>
+                            <a href="https://geoitajai.github.io/geo/plantacadastral.html" target="_blank">
+                                <font size="2">
+                                    Planta Cadastral Completa: http://plantacadastral.itajai.sc.gov.br
+                                </font>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="" id="tabelatabulator"></div>
+            <button class="barraLateralEsconder" onclick="barraAbrir()">Abrir ajuda &#8801;</button>
         </div>
-
+        <button type="button" class="botaopadrao" id="abrirConsultaPrevia">
+            <b>ABRIR CONSULTA PRÉVIA</b><img src="images/meclick.png" alt="clique para abrir" height="25" width="20">
+        </button>
+        <div class="tabela" id="tabelatabulator"></div>
     </div>
 
     <script>
+
+        //barra lateral
+        function barraAbrir() {
+            document.getElementById("barraCamadas").style.display = "inline-block";
+        }
+        function barraFechar() {
+            document.getElementById("barraCamadas").style.display = "none";
+        }
+
         //#div do mapa
         let mapa = new L.Map('mapa', {
             zoom: 14,
@@ -109,14 +161,13 @@
         mapa.createPane('basemap_numeracao');
         mapa.getPane('basemap_numeracao').style.zIndex = 402;
         mapa.getPane('basemap_numeracao').style.pointerEvents = 'none';
-
-        //coordenadas no click
-        const coordmapa = new L.Control.Coordinates({ promptText: 'Coordenadas para a área de transferência, utilize Ctrl+C', position: 'bottomright' }).addTo(mapa);
+        mapa.createPane('zoneamento');
+        mapa.getPane('zoneamento').style.zIndex = 401;
+        mapa.getPane('zoneamento').style.pointerEvents = 'none';
 
         //interatividade com mapa
         let zoomresultado = false;
         mapa.on('click', function (e) {
-            coordmapa.setCoordinates(e);
             malhacadastral
                 .identify()
                 .layers("gisdb.itajai.viewcadastrolotesfazenda3857:0") // just the counties sublayer
@@ -133,39 +184,30 @@
                 });
         });
 
-        //#basemaps
-
-        //Zoneamento
-        let plantaZoneamento = L.featureGroup();
-
-        //Mapa base, Urbanismo
         let tilesmu = L.esri.Vector.vectorTileLayer("7a110ef9198540068341e6908c6bf298", {
-            portalUrl: "https://arcgis.itajai.sc.gov.br/portal",
-            attribution: 'Prefeitura de Itajaí'
-        }).addTo(mapa).addTo(plantaZoneamento);
-
-        //Mapa ortoimagem 2020
-        let ortoimg2020 = L.esri.tiledMapLayer({
-            url: "https://arcgis.itajai.sc.gov.br/server/rest/services/Hosted/Ortoimagem_restitui%C3%A7%C3%A3o_2020/MapServer",
-            maxZoom: 19,
-            maxNativeZoom: 18,
-            attribution: 'Engemap geoinformação 2020, Prefeitura de Itajaí'
-        });
+            portalUrl: "https://arcgis.itajai.sc.gov.br/portal"
+        }).addTo(mapa);
 
         //Mapa base, ESRI
         let tileesri = new L.TileLayer(
             'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             minZoom: 12,
             maxZoom: 19,
-            opacity: 0.6,
+            opacity: 0.4,
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         });
 
+        //Zoneamento com legendas
+        let tilezonea = L.tileLayer.fallback('https://geoitajai.github.io/geo/tiles/zoneamento/{z}/{x}/{y}.png', {
+            minZoom: 12,
+            maxZoom: 19,
+            pane: 'zoneamento',
+            opacity: 0.5
+        }).addTo(mapa);
+
         //Controle de camadas
-        let baseMaps = {
+        var baseMaps = {
             "SIE.Itajaí": tilesmu,
-            "Zoneamento": plantaZoneamento,
-            "Ortoimg": ortoimg2020,
             "Satélite": tileesri
         };
         L.control.layers(baseMaps, null, {
@@ -184,7 +226,7 @@
             position: 'bottomright'
         });
         nortemapa.onAdd = function (map) {
-            let div = L.DomUtil.create('div', 'info2 legend');
+            var div = L.DomUtil.create('div', 'info2 legend');
             div.innerHTML +=
                 '<center><sub><font size="4">▲</font></sub><br/>' +
                 '<sup><font size="2">N</font></sup></center>'
@@ -197,37 +239,12 @@
             position: 'topright'
         }).addTo(mapa);
 
-        //Medidas
-        L.Control.measureControl({
-            position: 'topright'
-        }).addTo(mapa);
-
         //#Cadastro
         //Definir elementos da tabela
-        let table = new Tabulator('#tabelatabulator', {
-            height: '100%',
-            layout: 'fitColumns',
+        let table = new Tabulator("#tabelatabulator", {
+            height: "100%",
+            layout: "fitColumns",
             columns: [
-                {
-                    title: 'Consulta Prévia (construções)',
-                    formatter: 'link',
-                    width: 210,
-                    formatterParams: {
-                        labelField: 'linkinfo',
-                        urlField: 'consultaprevia',
-                        target: '_blank'
-                    }
-                },
-                {
-                    title: 'Avaliação atividade (alvará)',
-                    formatter: 'link',
-                    width: 200,
-                    formatterParams: {
-                        labelField: 'linkinfo',
-                        urlField: 'consultaalvara',
-                        target: '_blank'
-                    }
-                },
                 {
                     title: 'Cód.',
                     field: 'ncodimov',
@@ -547,219 +564,6 @@
             onEachFeature: inteVia,
         }).addTo(mapa);
 
-        //camadas zoneamento
-        //Manchas zoneamento
-        $.getJSON("data/zon2012webtabela.geojson", (data) => {
-            L.geoJson(data, {
-                style: (feature) => {
-                    let corzona;
-                    cormz = feature.properties.abrevia;
-                    if (cormz === 'ZAP') corzona = "#ffc821";
-                    else if (cormz === 'ZAP (CCS1)') corzona = "#ffc821";
-                    else if (cormz === 'ZAP (CCS2)') corzona = "#ffc821";
-                    else if (cormz === 'ZC 1') corzona = "#917951";
-                    else if (cormz === 'ZC 1 (CCS2)') corzona = "#917951";
-                    else if (cormz === 'ZC 2') corzona = "#ff5765";
-                    else if (cormz === 'ZC 2 (CCS1)') corzona = "#ff5765";
-                    else if (cormz === 'ZC 2 (CCS2)') corzona = "#ff5765";
-                    else if (cormz === 'ZEA') corzona = "#7cc5ab";
-                    else if (cormz === 'ZEA (CCS1)') corzona = "#7cc5ab";
-                    else if (cormz === 'ZEA (CCS3)') corzona = "#7cc5ab";
-                    else if (cormz === 'ZEU') corzona = "#d4d4bc";
-                    else if (cormz === 'ZEU (CCS1)') corzona = "#d4d4bc";
-                    else if (cormz === 'ZEU (CCS2)') corzona = "#d4d4bc";
-                    else if (cormz === 'ZIP') corzona = "#c82d2d";
-                    else if (cormz === 'ZIP (CCS1)') corzona = "#c82d2d";
-                    else if (cormz === 'ZIP (CCS2)') corzona = "#c82d2d";
-                    else if (cormz === 'ZIT') corzona = "#caf5f5";
-                    else if (cormz === 'ZIT (CCS2)') corzona = "#caf5f5";
-                    else if (cormz === 'ZPA 1') corzona = "#468e57";
-                    else if (cormz === 'ZPA 1 (CCS1)') corzona = "#468e57";
-                    else if (cormz === 'ZPA 1 (CCS3)') corzona = "#468e57";
-                    else if (cormz === 'ZPA 2') corzona = "#11cd00";
-                    else if (cormz === 'ZPA 2 (CCS2)') corzona = "#11cd00";
-                    else if (cormz === 'ZPA 3') corzona = "#71b580";
-                    else if (cormz === 'ZPA 3 (CCS1)') corzona = "#71b580";
-                    else if (cormz === 'ZPA 3 (CCS2)') corzona = "#71b580";
-                    else if (cormz === 'ZPA 3 (CCS3)') corzona = "#71b580";
-                    else if (cormz === 'ZPN') corzona = "#83cada";
-                    else if (cormz === 'ZPN (CCS1)') corzona = "#83cada";
-                    else if (cormz === 'ZPN (CCS2)') corzona = "#83cada";
-                    else if (cormz === 'ZR') corzona = "#96b7ab";
-                    else if (cormz === 'ZR 1') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q1)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q1)(CCS3)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q2)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q2)(CCS3)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q3)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q3)(CCS3)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 2') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q1)') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q1)(CCS3)') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q2)') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q3)') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q3)(CCS3)') corzona = "#b599da";
-                    else if (cormz === 'ZR 3') corzona = "#da89bc";
-                    else if (cormz === 'ZR 3 (CCS1)') corzona = "#da89bc";
-                    else if (cormz === 'ZR 3 (CCS3)') corzona = "#da89bc";
-                    else if (cormz === 'ZSI') corzona = "#ff721b";
-                    else if (cormz === 'ZSI (CCS1)') corzona = "#ff721b";
-                    else if (cormz === 'ZSI (CCS2)') corzona = "#ff721b";
-                    else if (cormz === 'ZTRA') corzona = "#fdf5b0";
-                    else if (cormz === 'ZTRA (CCS1)') corzona = "#fdf5b0";
-                    else if (cormz === 'ZTRU') corzona = "#bfdb99";
-                    else if (cormz === 'ZTRU (CCS2)') corzona = "#bfdb99";
-                    else if (cormz === 'ZU 1') corzona = "#ef8242";
-                    else if (cormz === 'ZU 1 (CCS1)') corzona = "#ef8242";
-                    else if (cormz === 'ZU 1 (CCS2)') corzona = "#ef8242";
-                    else if (cormz === 'ZU 2') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 2 (CCS1)') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 2 (CCS2)') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 2 (CCS3)') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 2 (Artigo 80)') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 3') corzona = "#ffff00";
-                    else if (cormz === 'ZU 3 (CCS1)') corzona = "#ffff00";
-                    else if (cormz === 'ZU 3 (CCS2)') corzona = "#ffff00";
-                    else if (cormz === 'ZU 4') corzona = "#deb239";
-                    else if (cormz === 'ZU 4 (CCS1)') corzona = "#deb239";
-                    else if (cormz === 'ZU 4 (CCS2)') corzona = "#deb239";
-                    else if (cormz === 'ZU 5') corzona = "#8c8a23";
-                    else if (cormz === 'ZU 5 (CCS1)') corzona = "#8c8a23";
-                    else if (cormz === 'ZU 5 (CCS2)') corzona = "#8c8a23";
-                    else corzona = "#fff";
-                    return { stroke: false, fillColor: corzona, fillOpacity: 0.4 };
-                },
-
-                onEachFeature: (feature, layer) => {
-                    layer.bindPopup(
-                        '<strong>' + 'Zona: ' + feature.properties.abrevia + '</strong>' + '<br/>' +
-                        '<table>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Usos permitidos: ' + feature.properties.permitidos + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Usos permissíveis: ' + feature.properties.permissiv + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Altura máxima: ' + feature.properties.alturamax + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Altura máxima do embasamento: ' + feature.properties.alturaemb + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Coeficiente de aproveitamento: ' + feature.properties.coefaprov + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Taxa de ocupação embasamento: ' + feature.properties.toemb + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Taxa de ocupação torre: ' + feature.properties.totorre + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Taxa de permeabilidade: ' + feature.properties.permeab + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Recuo frontal: ' + feature.properties.embrecfron + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Recuos laterais e fundos: ' + feature.properties.embreclat + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Recuos laterais e fundos com aberturas: ' + feature.properties.embreclatc + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Área mínima do lote: ' + feature.properties.lotemaxare + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Testada mínima do lote: ' + feature.properties.lotemaxtes + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Profundidade mínima do lote: ' + feature.properties.lotemaxpro +
-                        '</td>' +
-                        '</tr>' +
-                        '</table>'
-                    )
-                }
-            }).addTo(plantaZoneamento);
-        });
-
-        //CCS
-        $.getJSON("data/zon2012ccs.geojson", (data) => {
-            L.geoJson(data, {
-                style: (feature) => {
-                    var corlinhaccs,
-                        corcss = feature.properties.tipo;
-                    if (corcss == 'CCS1') corlinhaccs = "#ff0000";
-                    else if (corcss == 'CCS2') corlinhaccs = "#723900";
-                    else if (corcss == 'CCS3') corlinhaccs = "#b82e00";
-                    else corlinhaccs = "#fff";
-                    return { color: corlinhaccs, weight: 5, Opacity: 0.4, interactive: false };
-                },
-                interactive: false
-            }).addTo(plantaZoneamento);
-        });
-
-        //localização
-        function onLocationFound(e) {
-            let radius = e.accuracy / 2;
-        };
-        mapa.on('locationfound', onLocationFound);
-        function onLocationError(e) {
-            alert(e.message);
-        };
-        mapa.on('locationerror', onLocationError);
-
-        //botão localização
-        let customControl = L.Control.extend({
-            options: {
-                position: 'topright'
-            },
-            onAdd: function (mapa) {
-                let container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-                L.DomEvent.disableClickPropagation(container);
-                container.style.backgroundColor = 'white';
-                container.style.backgroundImage = "url(images/flatmap64x64.png)";
-                container.style.backgroundSize = "26px 26px";
-                container.style.width = '26px';
-                container.style.height = '26px';
-                container.onclick = function () {
-                    mapa.locate({
-                        setView: true,
-                        setZoom: 17
-                    });
-                }
-                return container;
-            }
-        });
-        mapa.addControl(new customControl());
-
         //Limites Município
         $.getJSON("data/limintermunicipais.geojson", function (data) {
             L.geoJson(data, {
@@ -772,6 +576,19 @@
                     };
                 }
             }).addTo(mapa);
+        });
+
+        //Abrir Consulta Prévia
+        $('#abrirConsultaPrevia, #abrirConsultaPreviaP').click(function () {
+            if (table.rowManager.activeRows["0"] === undefined) {
+                alert("Aproxime o mapa para a área de interesse para visualizar os lotes, clique sobre o lote para seleciona-lo");
+            } else {
+                if (table.rowManager.activeRows["0"].data.zon2012 === 'pend') {
+                    window.open('https://jaceguay.github.io/geoesri/consultazoneamentoerro.html#' + table.rowManager.activeRows["0"].data.ninscrao.substring(0, 15), 'ConsultaPrévia', 0, true);
+                } else {
+                    window.open('https://jaceguay.github.io/geoesri/consultazoneamento.html#' + table.rowManager.activeRows["0"].data.ninscrao.substring(0, 15), 'ConsultaPrévia', 0, true);
+                }
+            }
         });
     </script>
 </body>
