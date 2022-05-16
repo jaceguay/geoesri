@@ -333,12 +333,12 @@
                 fcol.features.forEach(el => {
                     if (zoneamento == 'pend') {
                         linkinfo = 'consultar secretatira urbanismo';
-                        consultapreviap = `https://jaceguay.github.io/geoesri/consultazoneamentoerro.html#${el.properties.lote_inscricao}`;
-                        consultaalvara = `https://jaceguay.github.io/geoesri/consultaalvara.html#${el.properties.lote_inscricao}`;
+                        consultapreviap = `https://geoitajai.github.io/geo/consultazoneamentoerro.html#${el.properties.lote_inscricao}`;
+                        consultaalvara = `https://geoitajai.github.io/geo/consultaalvara.html#${el.properties.lote_inscricao}`;
                     } else {
                         linkinfo = 'clique para abrir';
-                        consultapreviap = `https://jaceguay.github.io/geoesri/consultazoneamento.html#${el.properties.lote_inscricao}`;
-                        consultaalvara = `https://jaceguay.github.io/geoesri/consultaalvara.html#${el.properties.lote_inscricao}`;
+                        consultapreviap = `https://geoitajai.github.io/geo/consultazoneamento.html#${el.properties.lote_inscricao}`;
+                        consultaalvara = `https://geoitajai.github.io/geo/consultaalvara.html#${el.properties.lote_inscricao}`;
                     };
                     objtabela.push({
                         'consultaprevia': consultapreviap,
@@ -584,9 +584,9 @@
                 alert("Aproxime o mapa para a área de interesse para visualizar os lotes, clique sobre o lote para seleciona-lo");
             } else {
                 if (table.rowManager.activeRows["0"].data.zon2012 === 'pend') {
-                    window.open('https://jaceguay.github.io/geoesri/consultazoneamentoerro.html#' + table.rowManager.activeRows["0"].data.ninscrao.substring(0, 15), 'ConsultaPrévia', 0, true);
+                    window.open('https://geoitajai.github.io/geo/consultazoneamentoerro.html#' + table.rowManager.activeRows["0"].data.ninscrao.substring(0, 15), 'ConsultaPrévia', 0, true);
                 } else {
-                    window.open('https://jaceguay.github.io/geoesri/consultazoneamento.html#' + table.rowManager.activeRows["0"].data.ninscrao.substring(0, 15), 'ConsultaPrévia', 0, true);
+                    window.open('https://geoitajai.github.io/geo/consultazoneamento.html#' + table.rowManager.activeRows["0"].data.ninscrao.substring(0, 15), 'ConsultaPrévia', 0, true);
                 }
             }
         });

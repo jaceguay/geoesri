@@ -57,39 +57,140 @@
         gtag('config', 'UA-172813797-1');
     </script>
     <!-- estilos -->
-    <link rel="stylesheet" href="plantacadastral.css" />
     <link rel="stylesheet" href="lib/measure/leaflet.draw.css" />
     <link rel="stylesheet" href="lib/Control.Coordinates.css" />
+    <link rel="stylesheet" href="plantacadastral.css" />
 </head>
 
 <body>
-
-    <div class='conteiner1'>
-        <div class='conteiner0' id="brastitulo">
-            <div class='logo'>
+    <div id='pagina'>
+        <div id='conteiner0a'>
+            <button id="hamburger">&#9776;</button>
+            <div id='logo'>
                 <img src="images/favicon-32x32.png" style="height:auto; width:auto; padding:3px;">
                 <span>Município de Itajaí </br> <b>PLANTA CADASTRAL</b></span>
             </div>
-            <div class='pesquisa'>
+            <div id='util'>
                 <form>
                     <input id="pesquisaRapida" placeholder="Pesquisa inscr.imobiliária, código ou logradouro"
-                        style="width: 300px;">
+                        style="border: none; width: 300px; background-color: white;">
                 </form>
             </div>
         </div>
-        <div class="mapa" id="mapa">
+        <div id='conteiner0b'>
+            <div id='barraLateral'>
+                <h3>Início</h3>
+                <div class='conteudobarralateral'>
+                    <center>
+                        <p>Secretaria Municipal da Fazenda</p>
+                        <p><small>Cadastro Técnico Municipal</small></p>
+                        <hr>
+                        <p><small>Clique sobre um lote ou via para visualizar as propriedades.</small></p>
+                        <p><small>Mais informações:</small>
+                            <a href="https://geo.itajai.sc.gov.br/geoitajai/" target="_blank">
+                                <font size="2" color="black">
+                                    PORTAL GEOITAJAÍ
+                                </font>
+                        </p>
+                    </center>
+                    </a>
+                </div>
+                <h3> Grau de Risco Atividades</h3>
+                <div class='conteudobarralateral'>
+                    <p>
+                        <center><small>Anexo lei Nº 11.985, DE 24 DE AGOSTO DE 2020:</small></center>
+                    </p>
+                    <a href="https://geoitajai.github.io/geo/tabela_risco.html" target="_blank">
+                        <center>
+                            <font size="2">
+                                - LINK CONSULTA<br>TABELA DE GRAU DE RISCO / CÓDIGO CNAE
+                            </font>
+                        </center>
+                    </a>
+                    <p><a style="text-decoration:none" href="http://leismunicipa.is/hyrip" target="_blank">
+                            <center>
+                                <font size="1">
+                                    Decreto Nº 11.985, 24 de Agosto de 2020.
+                                </font>
+                            </center>
+                        </a>
+                        <a style="text-decoration:none" href="http://leismunicipa.is/pqbya" target="_blank">
+                            <center>
+                                <font size="1">
+                                    Decreto Nº 11.956, 24 de Agosto de 2020.
+                                </font>
+                            </center>
+                        </a>
+                    </p>
+                </div>
+                <h3>Zoneamento</h3>
+                <div class='conteudobarralateral'>
+                    <p>
+                        <a href="http://leismunicipa.is/pfdkq" target="_blank">
+                            <font size="2" color="black">
+                                Lei complementar nº215, de 31 de dezembro de 2012 - Anexo I
+                            </font>
+                        </a>
+                    </p>
+                    <p>Legenda:</p>
+                    <p>
+                        <span style="color:red">█</span>CCS1</br>
+                        <span style="color:#723900">█</span>CCS2</br>
+                        <span style="color:#b82e00">█</span>CCS3</br>
+                    </p>
+                    <hr>
+                    <p><small>Clique em uma zona no mapa para visualizar os parâmetros.</small></p>
+                    </br>
+                    <a href="https://geoitajai.github.io/geo/plantacadastralconsultaprevia.html" target="_blank">
+                        <font size="2" color="black">
+                            Mapa com ajuda, dedicado apenas a consulta prévia.
+                        </font>
+                    </a>
+                </div>
+                <h3>Engenharia de Trânsito</h3>
+                <div>
+                    <p>
+                        <center>
+                            <font size="2">
+                                <strong>
+                                    SMU-DET
+                                </strong>
+                                <br />
+                                Propostas de intervenções viárias.
+                            </font>
+                        </center>
+                    </p>
+                    <p>Legenda:</p>
+                    <img src="images/legDET.svg" style="width:140px;">
+                    <hr>
+                    <p><small>Estudo conceitual.</small></p>
+                </div>
+            </div>
+            <div id="mapa">mapa</div>
         </div>
         <div id="areatab">
             <div id='txt_tabela'>
                 Planta cadastral para simples conferência dos dados de cada imóvel, sujeita a alterações sem aviso
                 prévio. NÃO CONSTITUI DIREITO DE PROPRIEDADE.
             </div>
-            <div class="" id="tabelatabulator"></div>
+            <div id="tabelatabulator"></div>
         </div>
 
     </div>
 
     <script>
+        $(function () {
+            $('#barraLateral').accordion({
+                heightStyle: 'content',
+                activate: function (event, ui) { }
+            });
+        });
+
+        $('#hamburger').click(function () {
+            $('#barraLateral').toggle();
+            mapa.invalidateSize();
+        });
+
         //#div do mapa
         let mapa = new L.Map('mapa', {
             zoom: 14,
@@ -107,8 +208,10 @@
         });
 
         mapa.createPane('basemap_numeracao');
-        mapa.getPane('basemap_numeracao').style.zIndex = 402;
+        mapa.getPane('basemap_numeracao').style.zIndex = 401;
         mapa.getPane('basemap_numeracao').style.pointerEvents = 'none';
+        mapa.createPane('basemap_overlay');
+        mapa.getPane('basemap_overlay').style.zIndex = 402;
 
         //coordenadas no click
         const coordmapa = new L.Control.Coordinates({ promptText: 'Coordenadas para a área de transferência, utilize Ctrl+C', position: 'bottomright' }).addTo(mapa);
@@ -134,15 +237,11 @@
         });
 
         //#basemaps
-
-        //Zoneamento
-        let plantaZoneamento = L.featureGroup();
-
         //Mapa base, Urbanismo
         let tilesmu = L.esri.Vector.vectorTileLayer("7a110ef9198540068341e6908c6bf298", {
             portalUrl: "https://arcgis.itajai.sc.gov.br/portal",
             attribution: 'Prefeitura de Itajaí'
-        }).addTo(mapa).addTo(plantaZoneamento);
+        }).addTo(mapa);
 
         //Mapa ortoimagem 2020
         let ortoimg2020 = L.esri.tiledMapLayer({
@@ -164,10 +263,10 @@
         //Controle de camadas
         let baseMaps = {
             "SIE.Itajaí": tilesmu,
-            "Zoneamento": plantaZoneamento,
             "Ortoimg": ortoimg2020,
             "Satélite": tileesri
         };
+
         L.control.layers(baseMaps, null, {
             collapsed: false,
             position: 'bottomright'
@@ -316,12 +415,12 @@
                 fcol.features.forEach(el => {
                     if (zoneamento == 'pend') {
                         linkinfo = 'consultar secretatira urbanismo';
-                        consultapreviap = `https://jaceguay.github.io/geoesri/consultazoneamentoerro.html#${el.properties.lote_inscricao}`;
-                        consultaalvara = `https://jaceguay.github.io/geoesri/consultaalvara.html#${el.properties.lote_inscricao}`;
+                        consultapreviap = `https://geoitajai.github.io/geo/consultazoneamentoerro.html#${el.properties.lote_inscricao}`;
+                        consultaalvara = `https://geoitajai.github.io/geo/consultaalvara.html#${el.properties.lote_inscricao}`;
                     } else {
                         linkinfo = 'clique para abrir';
-                        consultapreviap = `https://jaceguay.github.io/geoesri/consultazoneamento.html#${el.properties.lote_inscricao}`;
-                        consultaalvara = `https://jaceguay.github.io/geoesri/consultaalvara.html#${el.properties.lote_inscricao}`;
+                        consultapreviap = `https://geoitajai.github.io/geo/consultazoneamento.html#${el.properties.lote_inscricao}`;
+                        consultaalvara = `https://geoitajai.github.io/geo/consultaalvara.html#${el.properties.lote_inscricao}`;
                     };
                     objtabela.push({
                         'consultaprevia': consultapreviap,
@@ -547,183 +646,39 @@
             onEachFeature: inteVia,
         }).addTo(mapa);
 
-        //camadas zoneamento
-        //Manchas zoneamento
-        $.getJSON("data/zon2012webtabela.geojson", (data) => {
-            L.geoJson(data, {
-                style: (feature) => {
-                    let corzona;
-                    cormz = feature.properties.abrevia;
-                    if (cormz === 'ZAP') corzona = "#ffc821";
-                    else if (cormz === 'ZAP (CCS1)') corzona = "#ffc821";
-                    else if (cormz === 'ZAP (CCS2)') corzona = "#ffc821";
-                    else if (cormz === 'ZC 1') corzona = "#917951";
-                    else if (cormz === 'ZC 1 (CCS2)') corzona = "#917951";
-                    else if (cormz === 'ZC 2') corzona = "#ff5765";
-                    else if (cormz === 'ZC 2 (CCS1)') corzona = "#ff5765";
-                    else if (cormz === 'ZC 2 (CCS2)') corzona = "#ff5765";
-                    else if (cormz === 'ZEA') corzona = "#7cc5ab";
-                    else if (cormz === 'ZEA (CCS1)') corzona = "#7cc5ab";
-                    else if (cormz === 'ZEA (CCS3)') corzona = "#7cc5ab";
-                    else if (cormz === 'ZEU') corzona = "#d4d4bc";
-                    else if (cormz === 'ZEU (CCS1)') corzona = "#d4d4bc";
-                    else if (cormz === 'ZEU (CCS2)') corzona = "#d4d4bc";
-                    else if (cormz === 'ZIP') corzona = "#c82d2d";
-                    else if (cormz === 'ZIP (CCS1)') corzona = "#c82d2d";
-                    else if (cormz === 'ZIP (CCS2)') corzona = "#c82d2d";
-                    else if (cormz === 'ZIT') corzona = "#caf5f5";
-                    else if (cormz === 'ZIT (CCS2)') corzona = "#caf5f5";
-                    else if (cormz === 'ZPA 1') corzona = "#468e57";
-                    else if (cormz === 'ZPA 1 (CCS1)') corzona = "#468e57";
-                    else if (cormz === 'ZPA 1 (CCS3)') corzona = "#468e57";
-                    else if (cormz === 'ZPA 2') corzona = "#11cd00";
-                    else if (cormz === 'ZPA 2 (CCS2)') corzona = "#11cd00";
-                    else if (cormz === 'ZPA 3') corzona = "#71b580";
-                    else if (cormz === 'ZPA 3 (CCS1)') corzona = "#71b580";
-                    else if (cormz === 'ZPA 3 (CCS2)') corzona = "#71b580";
-                    else if (cormz === 'ZPA 3 (CCS3)') corzona = "#71b580";
-                    else if (cormz === 'ZPN') corzona = "#83cada";
-                    else if (cormz === 'ZPN (CCS1)') corzona = "#83cada";
-                    else if (cormz === 'ZPN (CCS2)') corzona = "#83cada";
-                    else if (cormz === 'ZR') corzona = "#96b7ab";
-                    else if (cormz === 'ZR 1') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q1)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q1)(CCS3)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q2)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q2)(CCS3)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q3)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 1 (Q3)(CCS3)') corzona = "#7090d0";
-                    else if (cormz === 'ZR 2') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q1)') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q1)(CCS3)') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q2)') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q3)') corzona = "#b599da";
-                    else if (cormz === 'ZR 2 (Q3)(CCS3)') corzona = "#b599da";
-                    else if (cormz === 'ZR 3') corzona = "#da89bc";
-                    else if (cormz === 'ZR 3 (CCS1)') corzona = "#da89bc";
-                    else if (cormz === 'ZR 3 (CCS3)') corzona = "#da89bc";
-                    else if (cormz === 'ZSI') corzona = "#ff721b";
-                    else if (cormz === 'ZSI (CCS1)') corzona = "#ff721b";
-                    else if (cormz === 'ZSI (CCS2)') corzona = "#ff721b";
-                    else if (cormz === 'ZTRA') corzona = "#fdf5b0";
-                    else if (cormz === 'ZTRA (CCS1)') corzona = "#fdf5b0";
-                    else if (cormz === 'ZTRU') corzona = "#bfdb99";
-                    else if (cormz === 'ZTRU (CCS2)') corzona = "#bfdb99";
-                    else if (cormz === 'ZU 1') corzona = "#ef8242";
-                    else if (cormz === 'ZU 1 (CCS1)') corzona = "#ef8242";
-                    else if (cormz === 'ZU 1 (CCS2)') corzona = "#ef8242";
-                    else if (cormz === 'ZU 2') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 2 (CCS1)') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 2 (CCS2)') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 2 (CCS3)') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 2 (Artigo 80)') corzona = "#e9e9a8";
-                    else if (cormz === 'ZU 3') corzona = "#ffff00";
-                    else if (cormz === 'ZU 3 (CCS1)') corzona = "#ffff00";
-                    else if (cormz === 'ZU 3 (CCS2)') corzona = "#ffff00";
-                    else if (cormz === 'ZU 4') corzona = "#deb239";
-                    else if (cormz === 'ZU 4 (CCS1)') corzona = "#deb239";
-                    else if (cormz === 'ZU 4 (CCS2)') corzona = "#deb239";
-                    else if (cormz === 'ZU 5') corzona = "#8c8a23";
-                    else if (cormz === 'ZU 5 (CCS1)') corzona = "#8c8a23";
-                    else if (cormz === 'ZU 5 (CCS2)') corzona = "#8c8a23";
-                    else corzona = "#fff";
-                    return { stroke: false, fillColor: corzona, fillOpacity: 0.4 };
-                },
+        //#camadas, barra lateral
+        let detpropostas;
+        let plantaZoneamento;
 
-                onEachFeature: (feature, layer) => {
-                    layer.bindPopup(
-                        '<strong>' + 'Zona: ' + feature.properties.abrevia + '</strong>' + '<br/>' +
-                        '<table>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Usos permitidos: ' + feature.properties.permitidos + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Usos permissíveis: ' + feature.properties.permissiv + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Altura máxima: ' + feature.properties.alturamax + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Altura máxima do embasamento: ' + feature.properties.alturaemb + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Coeficiente de aproveitamento: ' + feature.properties.coefaprov + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Taxa de ocupação embasamento: ' + feature.properties.toemb + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Taxa de ocupação torre: ' + feature.properties.totorre + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Taxa de permeabilidade: ' + feature.properties.permeab + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Recuo frontal: ' + feature.properties.embrecfron + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Recuos laterais e fundos: ' + feature.properties.embreclat + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Recuos laterais e fundos com aberturas: ' + feature.properties.embreclatc + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Área mínima do lote: ' + feature.properties.lotemaxare + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Testada mínima do lote: ' + feature.properties.lotemaxtes + '<br/>' +
-                        '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>' +
-                        'Profundidade mínima do lote: ' + feature.properties.lotemaxpro +
-                        '</td>' +
-                        '</tr>' +
-                        '</table>'
-                    )
+        //#controle de camadas
+        let limparcamadas = () => {
+            if (mapa.hasLayer(detpropostas)) mapa.removeLayer(detpropostas);
+            if (mapa.hasLayer(plantaZoneamento)) mapa.removeLayer(plantaZoneamento);
+        };
+        $("#barraLateral").on("accordionactivate", (event, ui) => {
+            if (
+                ui.newHeader["0"].textContent === 'Zoneamento'
+            ) {
+                limparcamadas();
+                if (plantaZoneamento == undefined) {
+                    $.getScript('data/zon2012.js', () => { });
+                } else {
+                    mapa.addLayer(plantaZoneamento);
                 }
-            }).addTo(plantaZoneamento);
-        });
-
-        //CCS
-        $.getJSON("data/zon2012ccs.geojson", (data) => {
-            L.geoJson(data, {
-                style: (feature) => {
-                    var corlinhaccs,
-                        corcss = feature.properties.tipo;
-                    if (corcss == 'CCS1') corlinhaccs = "#ff0000";
-                    else if (corcss == 'CCS2') corlinhaccs = "#723900";
-                    else if (corcss == 'CCS3') corlinhaccs = "#b82e00";
-                    else corlinhaccs = "#fff";
-                    return { color: corlinhaccs, weight: 5, Opacity: 0.4, interactive: false };
-                },
-                interactive: false
-            }).addTo(plantaZoneamento);
+            }
+            else if (
+                ui.newHeader["0"].textContent === 'Engenharia de Trânsito'
+            ) {
+                limparcamadas();
+                if (detpropostas == undefined) {
+                    $.getScript('data/detpropostas.js', () => { });
+                } else {
+                    mapa.addLayer(detpropostas);
+                }
+            }
+            else {
+                limparcamadas();
+            };
         });
 
         //localização
